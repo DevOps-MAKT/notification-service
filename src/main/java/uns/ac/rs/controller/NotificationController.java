@@ -46,4 +46,21 @@ public class NotificationController {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error creating notification").build();
         }
     }
+
+    @PATCH
+    @Path("/update-read-status/{notification_id}")
+    public Response updateReadStatus(@PathParam("notification_id") String notificationId) {
+        try {
+            Notification notification = notificationService.updateReadStatus(notificationId);
+            logger.info("Notification read status successfully updated");
+            return Response.status(Response.Status.OK)
+                    .entity(new GeneralResponse<>(new NotificationResponseDTO(notification),
+                            "Notification read status successfully updated"))
+                    .build();
+        } catch (Exception e) {
+            logger.error("Error updating read status: {}", e.getLocalizedMessage());
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error updating read status").build();
+        }
+    }
+
 }

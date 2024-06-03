@@ -1,5 +1,6 @@
 package uns.ac.rs.service;
 
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uns.ac.rs.dto.request.NotificationDTO;
@@ -15,6 +16,13 @@ public class NotificationService {
     public Notification createNotification(NotificationDTO notificationDTO) {
         Notification notification = new Notification(notificationDTO);
         notificationRepository.persist(notification);
+        return notification;
+    }
+
+    public Notification updateReadStatus(String notificationId) {
+        Notification notification = notificationRepository.findById(new ObjectId(notificationId));
+        notification.setRead(true);
+        notificationRepository.update(notification);
         return notification;
     }
 }

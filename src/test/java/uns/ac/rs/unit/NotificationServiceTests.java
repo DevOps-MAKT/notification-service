@@ -1,6 +1,10 @@
 package uns.ac.rs.unit;
 
+import org.bson.types.ObjectId;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -39,5 +43,20 @@ public class NotificationServiceTests {
         assertEquals(notification.getReceiverId(), notificationDTO.getReceiverId());
         assertEquals(notification.getSenderEmail(), notificationDTO.getSenderEmail());
         assertEquals(notification.getAccommodationId(), notificationDTO.getAccommodationId());
+    }
+
+    @Test
+    public void testUpdateNotification() {
+        Notification notification = new Notification();
+        notification.setRead(false);
+        ObjectId objectId = new ObjectId();
+
+        when(notificationRepository.findById(objectId)).thenReturn(notification);
+
+        Notification updatedNotification = notificationService.updateReadStatus(objectId.toHexString());
+
+        verify(notificationRepository, times(1)).update(updatedNotification);
+
+        assertTrue(updatedNotification.isRead());
     }
 }
