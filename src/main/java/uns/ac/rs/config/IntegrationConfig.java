@@ -8,4 +8,5 @@ public interface IntegrationConfig {
     String userServiceAPI();
     String accommodationServiceAPI();
     String reservationServiceAPI();
+    String notificationServiceAPI();
 }

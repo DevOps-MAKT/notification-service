@@ -66,5 +66,9 @@ public class Notification {
         return null;
     }
 
+    public Notification() {
+
+    }
+
 
 }
