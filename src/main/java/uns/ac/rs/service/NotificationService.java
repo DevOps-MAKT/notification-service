@@ -12,8 +12,8 @@ public class NotificationService {
     @Autowired
     private NotificationRepository notificationRepository;
 
-    public Notification createNotification(NotificationDTO form) {
-        Notification notification = new Notification(form);
+    public Notification createNotification(NotificationDTO notificationDTO) {
+        Notification notification = new Notification(notificationDTO);
         notificationRepository.persist(notification);
         return notification;
     }
