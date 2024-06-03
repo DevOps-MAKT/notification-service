@@ -33,20 +33,9 @@ public class NotificationController {
     @POST
     @Path("/create")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response createNotification(@HeaderParam("Authorization") String authorizationHeader, NotificationDTO dto) {
-        GeneralResponse response = microserviceCommunicator.processResponse(
-                config.userServiceAPI() + "/auth/authorize/host",
-                "GET",
-                authorizationHeader);
-
-        String userEmail = (String) response.getData();
-        if (userEmail.equals("")) {
-            logger.warn("Unauthorized access for create notification");
-            return Response.status(Response.Status.UNAUTHORIZED).entity(response).build();
-        }
-
+    public Response createNotification(NotificationDTO notificationDTO) {
         try {
-            Notification notification = notificationService.createNotification(dto);
+            Notification notification = notificationService.createNotification(notificationDTO);
             logger.info("Notification successfully created");
             return Response.status(Response.Status.CREATED)
                     .entity(new GeneralResponse<>(new NotificationResponseDTO(notification),
