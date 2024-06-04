@@ -11,10 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import uns.ac.rs.GeneralResponse;
 import uns.ac.rs.MicroserviceCommunicator;
 import uns.ac.rs.config.IntegrationConfig;
+import uns.ac.rs.dto.NotificationStatusesDTO;
 import uns.ac.rs.dto.request.NotificationDTO;
 import uns.ac.rs.dto.response.NotificationResponseDTO;
 import uns.ac.rs.model.Notification;
 import uns.ac.rs.service.NotificationService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Path("/notification")
 @RequestScoped
@@ -49,7 +53,18 @@ public class NotificationController {
 
     @PATCH
     @Path("/update-read-status/{notification_id}")
-    public Response updateReadStatus(@PathParam("notification_id") String notificationId) {
+    public Response updateReadStatus(@HeaderParam("Authorization") String authorizationHeader,
+                                     @PathParam("notification_id") String notificationId) {
+        GeneralResponse response = microserviceCommunicator.processResponse(
+                config.userServiceAPI() + "/auth/authorize/everyone",
+                "GET",
+                authorizationHeader);
+
+        String userEmail = (String) response.getData();
+        if (userEmail.equals("")) {
+            logger.warn("Unauthorized access for retrieve users notifications");
+            return Response.status(Response.Status.UNAUTHORIZED).entity(response).build();
+        }
         try {
             Notification notification = notificationService.updateReadStatus(notificationId);
             logger.info("Notification read status successfully updated");
@@ -60,6 +75,47 @@ public class NotificationController {
         } catch (Exception e) {
             logger.error("Error updating read status: {}", e.getLocalizedMessage());
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error updating read status").build();
+        }
+    }
+
+    @GET
+    @Path("/users-notifications")
+    public Response retrieveUsersNotifications(@HeaderParam("Authorization") String authorizationHeader) {
+        GeneralResponse response = microserviceCommunicator.processResponse(
+                config.userServiceAPI() + "/auth/authorize/everyone",
+                "GET",
+                authorizationHeader);
+
+        String userEmail = (String) response.getData();
+        if (userEmail.equals("")) {
+            logger.warn("Unauthorized access for retrieve users notifications");
+            return Response.status(Response.Status.UNAUTHORIZED).entity(response).build();
+        }
+        try {
+            logger.info("Retrieving active notifications for user with email " + userEmail);
+            GeneralResponse activeNotifications = microserviceCommunicator.processResponse(
+                    config.userServiceAPI() + "/user/retrieve-active-notification-types",
+                    "GET",
+                    "");
+
+            NotificationStatusesDTO notificationStatusesDTO = (NotificationStatusesDTO) activeNotifications.getData();
+            logger.info("Successfully retrieved active notifications for user with email " + userEmail);
+            logger.info("Retrieving notifications");
+            List<Notification> notifications = notificationService.retrieveNotifications(userEmail, notificationStatusesDTO);
+            List<NotificationResponseDTO> notificationResponseDTOS = new ArrayList<>();
+            for (Notification notification: notifications) {
+                notificationResponseDTOS.add(new NotificationResponseDTO(notification));
+            }
+            logger.info("Successfully retrieved notifications");
+            return Response
+                    .ok()
+                    .entity(new GeneralResponse<>(notificationResponseDTOS,
+                            "Successfully retrieved notifications")
+                    )
+                    .build();
+        } catch (Exception e) {
+            logger.error("Error retrieving users notifications: {}", e.getLocalizedMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error retrieving ").build();
         }
     }
 
