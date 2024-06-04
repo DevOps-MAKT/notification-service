@@ -7,7 +7,7 @@ import uns.ac.rs.model.NotificationType;
 @Data
 @RegisterForReflection
 public class NotificationDTO {
-    private Long receiverId;
+    private String receiverEmail;
     private NotificationType notificationType;
     private String senderEmail;
     public int rating;

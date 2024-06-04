@@ -10,7 +10,7 @@ import uns.ac.rs.model.NotificationType;
 @RegisterForReflection
 public class NotificationResponseDTO {
     private ObjectId id;
-    private Long receiverId;
+    private String receiverEmail;
     private NotificationType notificationType;
     public String senderEmail;
     public String message;
@@ -19,7 +19,7 @@ public class NotificationResponseDTO {
 
     public NotificationResponseDTO(Notification notification) {
         this.id = notification.getId();
-        this.receiverId = notification.getReceiverId();
+        this.receiverEmail = notification.getReceiverEmail();
         this.notificationType = notification.getNotificationType();
         this.senderEmail = notification.getSenderEmail();
         this.message = notification.getMessage();

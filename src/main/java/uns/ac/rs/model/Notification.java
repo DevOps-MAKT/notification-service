@@ -13,7 +13,7 @@ import java.util.Calendar;
 public class Notification {
 
     public ObjectId id;
-    public Long receiverId;
+    public String receiverEmail;
     public NotificationType notificationType;
     public String senderEmail;
     public String message;
@@ -24,7 +24,7 @@ public class Notification {
     public boolean read;
 
     public Notification(NotificationDTO notificationDTO) {
-        this.receiverId = notificationDTO.getReceiverId();
+        this.receiverEmail = notificationDTO.getReceiverEmail();
         this.notificationType = notificationDTO.getNotificationType();
         this.senderEmail = notificationDTO.getSenderEmail();
         this.message = createMessage(notificationDTO);
