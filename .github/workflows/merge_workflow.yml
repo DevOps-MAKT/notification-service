@@ -97,37 +97,46 @@ jobs:
       - name: Build Quarkus application
         run: mvn -B clean install -DskipTests
 
-      - name: Set up Docker credentials
-        run: |
-            mkdir -p $HOME/.docker
-            echo "{\"auths\":{\"https://index.docker.io/v1/\":{\"username\":\"${{ secrets.DOCKERHUB_USERNAME }}\",\"password\":\"${{ secrets.DOCKERHUB_PASSWORD }}\"}}}" > $HOME/.docker/config.json
+      - name: Kaniko build
+        uses: aevea/action-kaniko@master
+        with:
+          image: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_IMAGE_NAME }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          cache: true
+          tag: ${{ needs.versioning.outputs.new_version }}
 
-      - name: Download Kaniko
-        run: |
-                mkdir -p $HOME/kaniko
-                curl -o $HOME/kaniko/executor -sSL https://github.com/GoogleContainerTools/kaniko/releases/download/v1.6.0/executor
-                chmod +x $HOME/kaniko/executor
-
-      - name: Verify Kaniko Download
-        run: |
-          expected_checksum=$(curl -sSL https://github.com/GoogleContainerTools/kaniko/releases/download/v1.6.0/executor.sha256)
-          actual_checksum=$(sha256sum $HOME/kaniko/executor | awk '{ print $1 }')
-          if [ "$expected_checksum" != "$actual_checksum" ]; then
-            echo "Checksum verification failed!"
-            exit 1
-          fi
-
-      - name: Build and push Docker image with Kaniko
-        run: |
-                $HOME/kaniko/executor --dockerfile=./src/main/docker/Dockerfile.multistage \
-                                      --context=$(pwd) \
-                                      --destination=${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_IMAGE_NAME }}:${{ needs.versioning.outputs.new_version }} \
-                                      --docker-config=$HOME/.docker/config.json
-
-      - name: Clean up
-        run: |
-                rm -rf $HOME/kaniko
-                rm -rf $HOME/.docker
+#      - name: Set up Docker credentials
+#        run: |
+#            mkdir -p $HOME/.docker
+#            echo "{\"auths\":{\"https://index.docker.io/v1/\":{\"username\":\"${{ secrets.DOCKERHUB_USERNAME }}\",\"password\":\"${{ secrets.DOCKERHUB_PASSWORD }}\"}}}" > $HOME/.docker/config.json
+#
+#      - name: Download Kaniko
+#        run: |
+#                mkdir -p $HOME/kaniko
+#                curl -o $HOME/kaniko/executor -sSL https://github.com/GoogleContainerTools/kaniko/releases/download/v1.6.0/executor
+#                chmod +x $HOME/kaniko/executor
+#
+#      - name: Verify Kaniko Download
+#        run: |
+#          expected_checksum=$(curl -sSL https://github.com/GoogleContainerTools/kaniko/releases/download/v1.6.0/executor.sha256)
+#          actual_checksum=$(sha256sum $HOME/kaniko/executor | awk '{ print $1 }')
+#          if [ "$expected_checksum" != "$actual_checksum" ]; then
+#            echo "Checksum verification failed!"
+#            exit 1
+#          fi
+#
+#      - name: Build and push Docker image with Kaniko
+#        run: |
+#                $HOME/kaniko/executor --dockerfile=./src/main/docker/Dockerfile.multistage \
+#                                      --context=$(pwd) \
+#                                      --destination=${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_IMAGE_NAME }}:${{ needs.versioning.outputs.new_version }} \
+#                                      --docker-config=$HOME/.docker/config.json
+#
+#      - name: Clean up
+#        run: |
+#                rm -rf $HOME/kaniko
+#                rm -rf $HOME/.docker
 
 #      - name: Set up Docker credentials
 #        run: |
