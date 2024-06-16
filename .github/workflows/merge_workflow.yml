@@ -108,6 +108,15 @@ jobs:
                 curl -o $HOME/kaniko/executor -sSL https://github.com/GoogleContainerTools/kaniko/releases/download/v1.6.0/executor
                 chmod +x $HOME/kaniko/executor
 
+      - name: Verify Kaniko Download
+        run: |
+          expected_checksum=$(curl -sSL https://github.com/GoogleContainerTools/kaniko/releases/download/v1.6.0/executor.sha256)
+          actual_checksum=$(sha256sum $HOME/kaniko/executor | awk '{ print $1 }')
+          if [ "$expected_checksum" != "$actual_checksum" ]; then
+            echo "Checksum verification failed!"
+            exit 1
+          fi
+
       - name: Build and push Docker image with Kaniko
         run: |
                 $HOME/kaniko/executor --dockerfile=./src/main/docker/Dockerfile.multistage \
