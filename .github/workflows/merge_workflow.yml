@@ -105,7 +105,7 @@ jobs:
       - name: Download Kaniko
         run: |
                 mkdir -p $HOME/kaniko
-                curl -sSLO https://github.com/GoogleContainerTools/kaniko/releases/download/v1.6.0/executor -o $HOME/kaniko/executor
+                curl -o $HOME/kaniko/executor -sSL https://github.com/GoogleContainerTools/kaniko/releases/download/v1.6.0/executor
                 chmod +x $HOME/kaniko/executor
 
       - name: Build and push Docker image with Kaniko
