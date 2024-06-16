@@ -105,6 +105,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
           cache: true
           tag: ${{ needs.versioning.outputs.new_version }}
+          build_file: ./src/main/docker/Dockerfile.multistage
 
 #      - name: Set up Docker credentials
 #        run: |
