@@ -99,8 +99,8 @@ jobs:
 
       - name: Set up Docker credentials
         run: |
-            mkdir -p /kaniko/.docker
-            echo "{\"auths\":{\"https://index.docker.io/v1/\":{\"username\":\"${{ secrets.DOCKERHUB_USERNAME }}\",\"password\":\"${{ secrets.DOCKERHUB_PASSWORD }}\"}}}" > /kaniko/.docker/config.json
+            mkdir -p $HOME/.docker
+            echo "{\"auths\":{\"https://index.docker.io/v1/\":{\"username\":\"${{ secrets.DOCKERHUB_USERNAME }}\",\"password\":\"${{ secrets.DOCKERHUB_PASSWORD }}\"}}}" > $HOME/.docker/config.json
 
       - name: Download Kaniko
         run: |
@@ -112,6 +112,7 @@ jobs:
               ./executor --dockerfile=./src/main/docker/Dockerfile.multistage \
               --context=$(pwd) \
               --destination=${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_IMAGE_NAME }}:${{ needs.versioning.outputs.new_version }}
+              --docker-config=$HOME/.docker
 
       - name: Clean up
         run: |
