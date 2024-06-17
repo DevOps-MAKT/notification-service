@@ -18,6 +18,7 @@ import uns.ac.rs.model.Notification;
 import uns.ac.rs.service.NotificationService;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 @Path("/notification")
@@ -94,11 +95,11 @@ public class NotificationController {
         try {
             logger.info("Retrieving active notifications for user with email " + userEmail);
             GeneralResponse activeNotifications = microserviceCommunicator.processResponse(
-                    config.userServiceAPI() + "/user/retrieve-active-notification-types",
+                    config.userServiceAPI() + "/user/retrieve-active-notification-types/" + userEmail,
                     "GET",
                     "");
 
-            NotificationStatusesDTO notificationStatusesDTO = (NotificationStatusesDTO) activeNotifications.getData();
+            NotificationStatusesDTO notificationStatusesDTO = new NotificationStatusesDTO((LinkedHashMap) activeNotifications.getData());
             logger.info("Successfully retrieved active notifications for user with email " + userEmail);
             logger.info("Retrieving notifications");
             List<Notification> notifications = notificationService.retrieveNotifications(userEmail, notificationStatusesDTO);

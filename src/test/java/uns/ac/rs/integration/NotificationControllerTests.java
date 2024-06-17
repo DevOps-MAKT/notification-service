@@ -20,6 +20,7 @@ import uns.ac.rs.model.NotificationType;
 import static org.hamcrest.Matchers.*;
 
 import java.net.URL;
+import java.util.LinkedHashMap;
 
 import static io.restassured.RestAssured.given;
 import static org.mockito.Mockito.doReturn;
@@ -80,16 +81,16 @@ public class NotificationControllerTests {
                         "GET",
                         "Bearer good-jwt");
 
-        NotificationStatusesDTO notificationStatusesDTO = new NotificationStatusesDTO();
-        notificationStatusesDTO.setReservationRequestedNotificationsActive(false);
-        notificationStatusesDTO.setAccommodationRatedNotificationsActive(false);
-        notificationStatusesDTO.setHostRatedNotificationsActive(false);
-        notificationStatusesDTO.setReservationCancelledNotificationsActive(false);
-        notificationStatusesDTO.setReservationRequestAnsweredActive(false);
+        LinkedHashMap<String, Object> notificationStatusesMap = new LinkedHashMap<>();
+        notificationStatusesMap.put("reservationRequestedNotificationsActive", false);
+        notificationStatusesMap.put("accommodationRatedNotificationsActive", false);
+        notificationStatusesMap.put("hostRatedNotificationsActive", false);
+        notificationStatusesMap.put("reservationCancelledNotificationsActive", false);
+        notificationStatusesMap.put("reservationRequestAnsweredNotificationsActive", false);
 
-        doReturn(new GeneralResponse(notificationStatusesDTO, "200"))
+        doReturn(new GeneralResponse(notificationStatusesMap, "200"))
                 .when(microserviceCommunicator)
-                .processResponse(config.userServiceAPI() + "/user/retrieve-active-notification-types",
+                .processResponse(config.userServiceAPI() + "/user/retrieve-active-notification-types/pera@gmail.com",
                         "GET",
                         "");
 
@@ -113,16 +114,16 @@ public class NotificationControllerTests {
                         "GET",
                         "Bearer good-jwt");
 
-        NotificationStatusesDTO notificationStatusesDTO = new NotificationStatusesDTO();
-        notificationStatusesDTO.setReservationRequestedNotificationsActive(true);
-        notificationStatusesDTO.setAccommodationRatedNotificationsActive(false);
-        notificationStatusesDTO.setHostRatedNotificationsActive(false);
-        notificationStatusesDTO.setReservationCancelledNotificationsActive(false);
-        notificationStatusesDTO.setReservationRequestAnsweredActive(false);
+        LinkedHashMap<String, Object> notificationStatusesMap = new LinkedHashMap<>();
+        notificationStatusesMap.put("reservationRequestedNotificationsActive", true);
+        notificationStatusesMap.put("accommodationRatedNotificationsActive", false);
+        notificationStatusesMap.put("hostRatedNotificationsActive", false);
+        notificationStatusesMap.put("reservationCancelledNotificationsActive", false);
+        notificationStatusesMap.put("reservationRequestAnsweredNotificationsActive", false);
 
-        doReturn(new GeneralResponse(notificationStatusesDTO, "200"))
+        doReturn(new GeneralResponse(notificationStatusesMap, "200"))
                 .when(microserviceCommunicator)
-                .processResponse(config.userServiceAPI() + "/user/retrieve-active-notification-types",
+                .processResponse(config.userServiceAPI() + "/user/retrieve-active-notification-types/pera@gmail.com",
                         "GET",
                         "");
 
