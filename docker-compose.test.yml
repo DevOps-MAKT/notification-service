@@ -2,31 +2,32 @@ version: '3.8'
 
 services:
   db:
-    image: postgres:13
-    container_name: postgres-test
+    image: mongo:4.4
+    container_name: mongo-test
     ports:
-      - 5432:5432
+      - 27017:27017
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: notificationservicetestdb
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_INITDB_DATABASE: notificationservicetestdb
     restart: unless-stopped
     healthcheck:
       test: 'exit 0'
 
   notification-service-test:
     image: maven:3.8.5-openjdk-17
-    container_name: user-service-quarkus-test
+    container_name: notification-service-quarkus-test
     volumes:
       - .:/workspace
       - ${HOME}/.m2/root/.m2
     environment:
-      - POSTGRESQL_HOST=postgres-test
-      - POSTGRESQL_PORT=5432
-      - POSTGRESQL_DB=notificationservicetestdb
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - MONGODB_CONNECTION_STRING=mongodb://root:root@mongo-test:27017/notificationservicetestdb?authSource=admin
+      - MONGODB_DB=notificationservicetestdb
     working_dir: /workspace
     depends_on:
       - db
     command: mvn clean test
+
+networks:
+  default:
+    name: my_network
