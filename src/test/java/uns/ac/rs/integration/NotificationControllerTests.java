@@ -86,7 +86,7 @@ public class NotificationControllerTests {
         notificationStatusesMap.put("accommodationRatedNotificationsActive", false);
         notificationStatusesMap.put("hostRatedNotificationsActive", false);
         notificationStatusesMap.put("reservationCancelledNotificationsActive", false);
-        notificationStatusesMap.put("reservationRequestAnsweredNotificationsActive", false);
+        notificationStatusesMap.put("reservationRequestAnsweredActive", false);
 
         doReturn(new GeneralResponse(notificationStatusesMap, "200"))
                 .when(microserviceCommunicator)
@@ -119,7 +119,7 @@ public class NotificationControllerTests {
         notificationStatusesMap.put("accommodationRatedNotificationsActive", false);
         notificationStatusesMap.put("hostRatedNotificationsActive", false);
         notificationStatusesMap.put("reservationCancelledNotificationsActive", false);
-        notificationStatusesMap.put("reservationRequestAnsweredNotificationsActive", false);
+        notificationStatusesMap.put("reservationRequestAnsweredActive", false);
 
         doReturn(new GeneralResponse(notificationStatusesMap, "200"))
                 .when(microserviceCommunicator)
