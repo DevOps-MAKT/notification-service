@@ -1,0 +1,9 @@
+package uns.ac.rs.model;
+
+public enum NotificationType {
+    RESERVATION_REQUESTED,
+    RESERVATION_CANCELLED,
+    HOST_RATED,
+    ACCOMMODATION_RATED,
+    RESERVATION_REQUEST_ANSWERED
+}

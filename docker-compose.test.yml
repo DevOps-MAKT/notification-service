@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  db:
+    image: mongo:4.4
+    container_name: mongo-test
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_INITDB_DATABASE: notificationservicetestdb
+    restart: unless-stopped
+    healthcheck:
+      test: 'exit 0'
+
+  notification-service-test:
+    image: maven:3.8.5-openjdk-17
+    container_name: notification-service-quarkus-test
+    volumes:
+      - .:/workspace
+      - ${HOME}/.m2/root/.m2
+    environment:
+      - MONGODB_CONNECTION_STRING=mongodb://root:root@mongo-test:27017/notificationservicetestdb?authSource=admin
+      - MONGODB_DB=notificationservicetestdb
+    working_dir: /workspace
+    depends_on:
+      - db
+    command: mvn clean test
+
+networks:
+  default:
+    name: my_network
