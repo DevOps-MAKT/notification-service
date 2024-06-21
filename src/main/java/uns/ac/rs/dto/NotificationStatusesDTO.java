@@ -35,6 +35,6 @@ public class NotificationStatusesDTO {
         this.reservationCancelledNotificationsActive = (boolean) data.get("reservationCancelledNotificationsActive");
         this.hostRatedNotificationsActive = (boolean) data.get("hostRatedNotificationsActive");
         this.accommodationRatedNotificationsActive = (boolean) data.get("accommodationRatedNotificationsActive");
-        this.reservationCancelledNotificationsActive = (boolean) data.get("reservationCancelledNotificationsActive");
+        this.reservationRequestAnsweredActive = (boolean) data.get("reservationRequestAnsweredActive");
     }
 }
